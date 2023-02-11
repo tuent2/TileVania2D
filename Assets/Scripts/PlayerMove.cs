@@ -7,27 +7,36 @@ public class PlayerMove : MonoBehaviour
     Vector2 moveInput;
     Rigidbody2D myRigidbody;
     Animator myAnimator;
-    CapsuleCollider2D myCapsuleCollider;
+   
+    CapsuleCollider2D myBodyCollider;
+    BoxCollider2D myFeetCollider;
     float gravityScaleAtStart;
+    bool isAlive = true;
 
     [SerializeField] float moveSpeed = 5f;
     [SerializeField] float jumpSpeed = 5f;
     [SerializeField] float climbSpeed = 5f;
+    [SerializeField] Vector2 deathKick = new Vector2(5f,5f);
     // Start is called before the first frame update
     void Start()
     {
         myRigidbody = gameObject.GetComponent<Rigidbody2D>();
         myAnimator = gameObject.GetComponent<Animator>();
-        myCapsuleCollider = gameObject.GetComponent<CapsuleCollider2D>();
+        myBodyCollider = gameObject.GetComponent<CapsuleCollider2D>();
+        myFeetCollider = gameObject.GetComponent<BoxCollider2D>();
         gravityScaleAtStart = myRigidbody.gravityScale;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(!isAlive){
+            return;
+        }
         Run();
         FlipSprite();
         Climbing();
+        Die();
     }
 
     void FlipSprite()
@@ -42,7 +51,7 @@ public class PlayerMove : MonoBehaviour
 
     void Climbing()
     {
-        if (!myCapsuleCollider.IsTouchingLayers(LayerMask.GetMask("Climbing")))
+        if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Climbing")))
         {
             myRigidbody.gravityScale = gravityScaleAtStart;
             myAnimator.SetBool("isClimbing",false);
@@ -65,15 +74,29 @@ public class PlayerMove : MonoBehaviour
 
     }
 
+    void Die (){
+        if(myBodyCollider.IsTouchingLayers(LayerMask.GetMask("Enemy"))){
+            isAlive = false;
+            myAnimator.SetTrigger("Died");
+            myRigidbody.velocity = deathKick;
+        }
+    }
+
     void OnMove(InputValue value)
     {
+        if(!isAlive){
+            return;
+        }
         moveInput = value.Get<Vector2>();
         Debug.Log(moveInput);
     }
 
     void OnJump(InputValue value)
     {
-        if (!myCapsuleCollider.IsTouchingLayers(LayerMask.GetMask("Ground"))) { return; }
+        if(!isAlive){
+            return;
+        }
+        if (!myFeetCollider.IsTouchingLayers(LayerMask.GetMask("Ground"))) { return; }
         if (value.isPressed)
         {
             myRigidbody.velocity += new Vector2(0f, jumpSpeed);
