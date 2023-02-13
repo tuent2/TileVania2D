@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -17,10 +18,10 @@ TagManager:
   - BackGround
   - Bouncing
   - Enemy
-  - 
-  - 
-  - 
-  - 
+  - Hardzard
+  - Bullet
+  - Interactables
+  - Coin
   - 
   - 
   - 
@@ -53,8 +54,20 @@ TagManager:
   - name: Climbing
     uniqueID: 1560765497
     locked: 0
+  - name: Hardzard
+    uniqueID: 2701039935
+    locked: 0
   - name: Enemy
     uniqueID: 365343495
+    locked: 0
+  - name: Interactables
+    uniqueID: 477149299
+    locked: 0
+  - name: Coin
+    uniqueID: 1488160851
+    locked: 0
+  - name: Bullet
+    uniqueID: 2023709685
     locked: 0
   - name: Player
     uniqueID: 3390509703
